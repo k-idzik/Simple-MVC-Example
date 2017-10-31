@@ -1,6 +1,6 @@
 // pull in our models. This will automatically load the index.js from that folder
 const models = require('../models');
-console.dir(models);
+
 // get the Cat and Dog model
 const Cat = models.Cat.CatModel;
 const Dog = models.Dog.DogModel;
@@ -126,6 +126,24 @@ const hostPage1 = (req, res) => {
   readAllCats(req, res, callback);
 };
 
+// function to handle requests to the page1 page
+// controller functions in Express receive the full HTTP request
+// and a pre-filled out response object to send
+const hostPage4 = (req, res) => {
+  // function to call when we get objects back from the database.
+  // With Mongoose's find functions, you will get an err and doc(s) back
+  const callback = (err, docs) => {
+    if (err) {
+      return res.json({ err }); // if error, return it
+    }
+
+    // return success
+    return res.render('page4', { dogs: docs });
+  };
+
+  readAllDogs(req, res, callback);
+};
+
 // function to handle requests to the page2 page
 // controller functions in Express receive the full HTTP request
 // and a pre-filled out response object to send
@@ -215,7 +233,7 @@ const setDogName = (req, res) => {
   // check if the required fields exist
   // normally you would also perform validation
   // to know if the data they sent you was real
-  if (!req.body.firstname || !req.body.lastname || !req.body.beds) {
+  if (!req.body.firstname || !req.body.lastname || !req.body.breed || !req.body.age) {
     // if not respond with a 400 error
     // (either through json or a web page depending on the client dev)
     return res.status(400).json({ error: 'firstname, lastname, breed and age are all required' });
@@ -392,6 +410,7 @@ module.exports = {
   page1: hostPage1,
   page2: hostPage2,
   page3: hostPage3,
+  page4: hostPage4,
   readCat,
   readDog,
   getName,
